@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}관리자 대시보드{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>관리자 대시보드</h2>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>사용자 목록</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>사용자명</th>
+                        <th>가입일</th>
+                        <th>관리자 여부</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>{{ '예' if user.is_admin else '아니오' }}</td>
+                        <td>
+                            {% if user.is_suspended %}
+                                <span class="badge bg-danger">정지됨</span>
+                            {% else %}
+                                <span class="badge bg-success">활성</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not user.is_admin %}
+                                {% if user.is_suspended %}
+                                    <form action="{{ url_for('suspend_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                        <input type="hidden" name="action" value="activate">
+                                        <button type="submit" class="btn btn-success btn-sm">활성화</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ url_for('suspend_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                        <input type="hidden" name="action" value="suspend">
+                                        <button type="submit" class="btn btn-warning btn-sm">정지</button>
+                                    </form>
+                                {% endif %}
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        onclick="confirmDeleteUser('{{ user.id }}', '{{ user.username|escapejs }}')">
+                                    삭제
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>채팅방 목록</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>채팅방 ID</th>
+                        <th>참여자</th>
+                        <th>생성일</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in chat_rooms %}
+                    <tr>
+                        <td>{{ room.id }}</td>
+                        <td>
+                            {% if room.participants %}
+                                {% for participant in room.participants %}
+                                    {{ participant.username }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                전체 채팅방
+                            {% endif %}
+                        </td>
+                        <td>{{ room.created_at }}</td>
+                        <td>
+                            {% if room.is_active %}
+                                <span class="badge bg-success">활성</span>
+                            {% else %}
+                                <span class="badge bg-secondary">비활성</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('view_chat', room_id=room.id) }}" class="btn btn-primary btn-sm">
+                                채팅 보기
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>상품 목록</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>제목</th>
+                        <th>가격</th>
+                        <th>판매자</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.title }}</td>
+                        <td>{{ "{:,}".format(product.price) }}원</td>
+                        <td>{{ product.seller_name }}</td>
+                        <td>{% if product.is_deleted %}삭제됨{% else %}활성{% endif %}</td>
+                        <td>
+                            {% if not product.is_deleted %}
+                            <button type="button" class="btn btn-danger btn-sm" 
+                                    onclick="confirmDeleteProduct('{{ product.id }}', '{{ product.title|escapejs }}')">
+                                삭제
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>신고 내역</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>신고자</th>
+                        <th>대상</th>
+                        <th>사유</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.id }}</td>
+                        <td>{{ report.reporter_name }}</td>
+                        <td>{{ report.target_name }}</td>
+                        <td>{{ report.reason }}</td>
+                        <td>{{ report.status }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('handle_report', report_id=report.id) }}" class="d-inline">
+                                <select name="status" class="form-select form-select-sm d-inline-block w-auto">
+                                    <option value="pending" {% if report.status == 'pending' %}selected{% endif %}>대기 중</option>
+                                    <option value="resolved" {% if report.status == 'resolved' %}selected{% endif %}>해결됨</option>
+                                    <option value="rejected" {% if report.status == 'rejected' %}selected{% endif %}>거부됨</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm">상태 변경</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 사용자 삭제 확인 모달 -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">사용자 삭제 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>정말로 <span id="deleteUsername"></span> 사용자를 삭제하시겠습니까?</p>
+                <p class="text-danger">이 작업은 되돌릴 수 없습니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <form id="deleteUserForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">삭제</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 상품 삭제 확인 모달 -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">상품 삭제 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>정말로 <span id="deleteProductTitle"></span> 상품을 삭제하시겠습니까?</p>
+                <p class="text-danger">이 작업은 되돌릴 수 없습니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <form id="deleteProductForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">삭제</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDeleteUser(userId, username) {
+    document.getElementById('deleteUsername').textContent = username;
+    document.getElementById('deleteUserForm').action = `/admin/delete_user/${userId}`;
+    new bootstrap.Modal(document.getElementById('deleteUserModal')).show();
+}
+
+function confirmDeleteProduct(productId, productTitle) {
+    document.getElementById('deleteProductTitle').textContent = productTitle;
+    document.getElementById('deleteProductForm').action = `/admin/delete_product/${productId}`;
+    new bootstrap.Modal(document.getElementById('deleteProductModal')).show();
+}
+</script>
+{% endblock %} 

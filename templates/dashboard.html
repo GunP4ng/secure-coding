@@ -1,0 +1,578 @@
+{% extends "base.html" %}
+{% block title %}대시보드{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="user-info">
+        <h2>안녕하세요, {{ user.username }}님!</h2>
+        <p>가입일: {{ user.created_at }}</p>
+    </div>
+
+    <div class="chat-container">
+        <h3>전체 채팅</h3>
+        <div class="chat-messages-container">
+            <div class="chat-messages" id="chat-messages">
+                <!-- 메시지를 반대 순서로 정렬 (최신 메시지가 하단에 표시) -->
+                {% for message in global_messages|reverse %}
+                    <div class="message {{ 'sent' if message.sender_id == session.user_id else 'received' }}">
+                        <div class="message-header">
+                            <span class="sender">{{ message.sender_name }}</span>
+                        </div>
+                        <div class="message-content">{{ message.content }}</div>
+                        <div class="message-time">
+                            {% if message.created_at is string %}
+                                {{ message.created_at.replace('T', ' ').split('.')[0] if 'T' in message.created_at else message.created_at }}
+                            {% else %}
+                                {{ message.created_at|datetime }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="message-form">
+            <input type="text" id="message-input" placeholder="메시지를 입력하세요...">
+            <button id="send-button">전송</button>
+        </div>
+    </div>
+
+    <div class="products">
+        <div class="products-header">
+            <h3>최근 상품</h3>
+            <div class="products-actions">
+                <form method="get" action="{{ url_for('search') }}" class="search-form">
+                    <input type="text" name="keyword" placeholder="상품 검색" class="search-input">
+                    <button type="submit" class="search-button">검색</button>
+                </form>
+            </div>
+            <a href="{{ url_for('add_product') }}" class="login-button">상품 등록</a>
+        </div>
+        {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <div class="product-info">
+                            <h3><a href="{{ url_for('view_product', product_id=product.id) }}">{{ product.title }}</a></h3>
+                            <p class="price">{{ "{:,}".format(product.price) }}원</p>
+                            <p class="seller">판매자: {{ product.seller_name }}</p>
+                        </div>
+                        <div class="product-image-container">
+                            {% if product.image_url %}
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.title }}" class="product-img">
+                            </div>
+                            {% else %}
+                            <div class="product-image no-image">
+                                <span>이미지 없음</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('view_product', product_id=product.id) }}" class="button">상세보기</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>등록된 상품이 없습니다.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .user-info h2 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 24px;
+    }
+
+    .user-info p {
+        color: #666;
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    .chat-container {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-container h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    .chat-messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px 0;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .chat-messages {
+        height: 300px;
+        overflow-y: auto;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        max-width: 70%;
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        position: relative;
+        clear: both;
+    }
+
+    .sent {
+        align-self: flex-end;
+        background-color: #007AFF;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+
+    .received {
+        align-self: flex-start;
+        background-color: #e9e9eb;
+        color: #333;
+        border-bottom-left-radius: 5px;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
+
+    .sent .message-header {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .received .message-header {
+        color: #777;
+    }
+
+    .sender {
+        font-weight: 500;
+    }
+
+    .message-time {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        text-align: right;
+        margin-top: 4px;
+    }
+
+    .sent .message-time {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .received .message-time {
+        color: #777;
+    }
+
+    .message-content {
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    .message-form {
+        display: flex;
+        padding-top: 15px;
+        border-top: 1px solid #e0e0e0;
+        gap: 10px;
+    }
+
+    #message-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    #send-button {
+        padding: 12px 20px;
+        background-color: #007AFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        min-width: 80px;
+    }
+
+    #send-button:hover {
+        background-color: #005BB5;
+    }
+
+    .products {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .products-header {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .products-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .search-button {
+        padding: 12px 20px;
+        background-color: #007AFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        min-width: 80px;
+    }
+
+    .search-button:hover {
+        background-color: #005BB5;
+    }
+
+    .login-button {
+        width: 16.67%;
+        padding: 12px;
+        background-color: #007AFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .login-button:hover {
+        background-color: #005BB5;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .product-card {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-info {
+        margin-bottom: 15px;
+    }
+
+    .product-info h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        line-height: 1.3;
+        height: 48px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .product-info h3 a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .product-info h3 a:hover {
+        color: #007AFF;
+    }
+
+    .price {
+        color: #007AFF;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 8px 0;
+    }
+
+    .seller {
+        color: #666;
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    .product-image-container {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        border-radius: 4px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+    }
+
+    .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .no-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        color: #999;
+        font-size: 14px;
+    }
+
+    .button {
+        padding: 12px 20px;
+        background-color: #007AFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: background-color 0.2s;
+        margin-top: auto;
+    }
+
+    .button:hover {
+        background-color: #005BB5;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 20px;
+        }
+
+        .products-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .products-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .search-form {
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Socket.IO 클라이언트 라이브러리 -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOMContentLoaded: JS code is running.");
+
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const currentUserID = JSON.parse('{{ session.user_id|tojson }}');
+    
+    // Socket.IO 연결 설정
+    const socket = io();
+
+    // 연결 상태 확인
+    socket.on('connect', function() {
+        console.log("Socket.IO 연결 성공");
+        // 전역 채팅방 입장
+        socket.emit('join_room', { room_id: 'global_chat' });
+    });
+
+    socket.on('connect_error', function(error) {
+        console.error("Socket.IO 연결 오류:", error);
+    });
+
+    socket.on('disconnect', function() {
+        console.log("Socket.IO 연결 해제");
+    });
+
+    // 메시지 수신 이벤트
+    socket.on('message', function(data) {
+        console.log('메시지 수신:', data);
+        addMessage(data);
+    });
+
+    // 전송 버튼 클릭 이벤트
+    sendButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('전송 버튼 클릭됨');
+        sendMessage();
+    });
+
+    // 엔터 키 이벤트
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log('엔터 키 입력됨');
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const content = messageInput.value.trim();
+        if (content) {
+            try {
+                console.log('메시지 전송 시도:', content);
+                socket.emit('send_message', {
+                    room_id: String('global_chat'),
+                    content: content
+                });
+                messageInput.value = '';
+                messageInput.focus();
+            } catch (error) {
+                console.error('메시지 전송 중 오류 발생:', error);
+                alert('메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        }
+    }
+
+    // 메시지 추가 함수
+    function addMessage(data) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = data.sender_id == currentUserID ? 'message sent' : 'message received';
+        
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'message-header';
+        
+        const senderSpan = document.createElement('span');
+        senderSpan.className = 'sender';
+        senderSpan.textContent = data.sender_name || '알 수 없음';
+        
+        headerDiv.appendChild(senderSpan);
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = data.content;
+        
+        // 시간을 별도의 div에 표시
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        
+        // 시간 형식 변경 - ISO 형식을 YYYY-MM-DD HH:MM:SS 형식으로 변환
+        let formattedTime = data.created_at;
+        if (typeof data.created_at === 'string') {
+            if (data.created_at.includes('T')) {
+                formattedTime = data.created_at.replace('T', ' ').split('.')[0];
+            } else {
+                formattedTime = data.created_at;
+            }
+        } else if (data.created_at instanceof Date) {
+            formattedTime = data.created_at.toISOString().replace('T', ' ').split('.')[0];
+        } else if (data.created_at) {
+            // 기타 형식의 날짜 처리 (마이크로초 제거)
+            formattedTime = String(data.created_at).split('.')[0];
+        }
+        timeDiv.textContent = formattedTime;
+        
+        messageDiv.appendChild(headerDiv);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+        
+        // 새 메시지는 맨 아래에 추가 (최신 메시지가 하단에 표시)
+        chatMessages.appendChild(messageDiv);
+        
+        // 스크롤을 맨 아래로 이동
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // 초기 로드 시 스크롤을 맨 아래로 이동
+    setTimeout(function() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 100);
+});
+</script>
+{% endblock %}

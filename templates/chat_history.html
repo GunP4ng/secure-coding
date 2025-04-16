@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}채팅 내역{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">채팅 내역</h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if chat_rooms %}
+                        <div class="list-group list-group-flush">
+                            {% for room in chat_rooms %}
+                                <div class="list-group-item p-3 {% if not room.is_active %}inactive-chat{% endif %} {% if room.has_new_messages %}has-new-messages{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <div class="avatar-circle">
+                                                    <span class="avatar-initials">
+                                                        {{ room.other_user.username[:2]|upper }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">{{ room.other_user.username }}</h6>
+                                                {% if room.last_message %}
+                                                    <p class="text-muted small mb-0">
+                                                        {{ room.last_message.content|truncate(30) }}
+                                                    </p>
+                                                {% else %}
+                                                    <p class="text-muted small mb-0">아직 메시지가 없습니다</p>
+                                                {% endif %}
+                                                
+                                                {% if not room.is_active and room.has_new_messages %}
+                                                <small class="text-primary d-block">
+                                                    <i class="fas fa-envelope"></i> 새 메시지가 도착했습니다
+                                                </small>
+                                                {% elif not room.is_active %}
+                                                <small class="text-muted d-block">
+                                                    <i class="fas fa-sign-out-alt"></i> 나가기한 채팅방
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            {% if room.last_message %}
+                                                <small class="text-muted d-block">
+                                                    {{ room.last_message.created_at|datetime }}
+                                                </small>
+                                            {% endif %}
+                                            {% if room.unread_count > 0 %}
+                                                <span class="badge bg-primary rounded-pill">
+                                                    {{ room.unread_count }}
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% if not room.is_active %}
+                                                <form action="{{ url_for('join_chat_room', room_id=room.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="fas fa-sign-in-alt"></i> 재입장
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <a href="{{ url_for('chat_room', room_id=room.id) }}" class="btn btn-sm btn-outline-secondary mt-2">
+                                                    <i class="fas fa-comments"></i> 채팅
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="fas fa-comments fa-3x text-muted"></i>
+                            </div>
+                            <h5 class="text-muted">채팅 내역이 없습니다</h5>
+                            <p class="text-muted small">새로운 채팅을 시작해보세요</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-initials {
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.list-group-item {
+    border-left: 0;
+    border-right: 0;
+    transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item:first-child {
+    border-top: 0;
+}
+
+.list-group-item:last-child {
+    border-bottom: 0;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.25em 0.6em;
+}
+
+.inactive-chat {
+    background-color: #f8f9fa;
+    border-left: 3px solid #dc3545;
+}
+
+.has-new-messages {
+    background-color: #e8f4ff;
+    border-left: 3px solid #007bff;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+</style>
+{% endblock %} 

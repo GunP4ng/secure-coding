@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block title %}새 상품 등록{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>상품 등록</h2>
+    <form method="post" enctype="multipart/form-data" id="productForm" action="{{ url_for('add_product') }}" class="product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="title">상품명</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="price">가격</label>
+            <input type="number" id="price" name="price" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="description">상품 설명</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="images">상품 이미지</label>
+            <div class="image-upload-container">
+                <div class="image-upload-box" onclick="document.getElementById('images').click()">
+                    <i class="upload-icon">+</i>
+                    <span class="upload-text">이미지 업로드</span>
+                    <span class="upload-info">최대 5개, 10MB 이하</span>
+                </div>
+                <input type="file" id="images" name="images" multiple accept="image/*" style="display: none;">
+                <div id="image-preview" class="image-preview"></div>
+            </div>
+        </div>
+        <button type="submit" class="button">상품 등록</button>
+    </form>
+</div>
+
+<style>
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.image-upload-container {
+    margin-bottom: 20px;
+}
+
+.image-upload-box {
+    width: 150px;
+    height: 150px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.image-upload-box:hover {
+    border-color: #007AFF;
+    background-color: rgba(0, 122, 255, 0.05);
+}
+
+.upload-icon {
+    font-size: 32px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.upload-text {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.upload-info {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preview-image-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.preview-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.delete-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    padding: 0;
+}
+
+.button {
+    background-color: #007AFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+</style>
+
+<script>
+let imageCount = 0;
+const maxImages = 5;
+
+document.getElementById('productForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('title').value;
+    const price = document.getElementById('price').value;
+    const description = document.getElementById('description').value;
+    
+    if (!title || !price || !description) {
+        alert('모든 필수 항목을 입력해주세요.');
+        return;
+    }
+    
+    const imageInput = document.getElementById('images');
+    const imagePreview = document.getElementById('image-preview');
+    
+    // 이미지 업로드 확인
+    console.log('이미지 미리보기 자식 요소 수:', imagePreview.children.length);
+    
+    if (imagePreview.children.length === 0) {
+        if (!confirm('이미지 없이 상품을 등록하시겠습니까?')) {
+            return;
+        }
+    }
+    
+    // 폼 제출
+    console.log('폼 제출 시도');
+    this.submit();
+});
+
+document.getElementById('images').addEventListener('change', function(e) {
+    const files = e.target.files;
+    const preview = document.getElementById('image-preview');
+    
+    console.log('선택된 파일:', files.length, '개');
+    
+    if (imageCount + files.length > maxImages) {
+        alert(`최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.`);
+        this.value = '';
+        return;
+    }
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log('파일 정보:', file.name, file.type, file.size);
+        
+        if (!file.type.startsWith('image/')) {
+            alert('이미지 파일만 업로드할 수 있습니다.');
+            this.value = '';
+            return;
+        }
+        
+        if (file.size > 10 * 1024 * 1024) {
+            alert('이미지 크기는 10MB를 초과할 수 없습니다.');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'preview-image-container';
+            
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-image';
+            deleteBtn.type = 'button';  // 명시적으로 button 타입 지정
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = function() {
+                imgContainer.remove();
+                imageCount--;
+                console.log('이미지 삭제됨, 남은 개수:', imageCount);
+            };
+            
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(deleteBtn);
+            preview.appendChild(imgContainer);
+            imageCount++;
+            console.log('이미지 추가됨, 현재 개수:', imageCount);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

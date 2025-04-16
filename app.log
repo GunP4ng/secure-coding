@@ -1,0 +1,251 @@
+2025-04-16 22:17:03,036 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:17:03,284 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:17:03,285 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:21:36,899 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:21:37,136 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:21:37,140 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:25:59,918 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:26:00,163 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:26:00,163 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:27:37,520 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:27:37,603 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:27:37,924 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:27:37,925 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:33:33,027 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:33:33,098 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:33:33,970 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:33:33,971 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:33:47,372 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:33:47,626 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:33:47,627 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:34:09,355 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:34:09,356 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:34:10,514 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:34:10,514 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:34:12,051 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:34:12,052 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:35:51,083 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:35:51,139 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:35:51,477 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:35:51,477 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:36:46,507 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:36:46,743 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:36:46,744 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:38:25,036 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:38:25,089 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:38:25,345 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:38:25,345 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:38:51,423 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:38:51,486 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:38:51,794 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:38:51,795 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:40:17,752 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:40:17,992 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:40:17,993 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:40:59,779 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:40:59,779 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:41:27,211 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:41:27,316 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:41:27,673 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:41:27,674 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:43:22,009 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:43:22,122 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:43:22,521 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:43:22,521 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:43:44,585 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:43:44,647 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:43:44,930 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:43:44,931 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:44:08,001 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:44:08,059 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:44:08,383 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:44:08,384 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:44:42,834 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:44:42,835 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:44:57,694 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:44:57,924 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:44:57,924 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:50:03,886 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:50:03,989 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:50:04,240 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:50:04,241 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:50:24,297 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:50:24,349 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:50:24,610 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:50:24,611 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:51:02,849 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:51:03,073 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:51:03,074 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:52:51,427 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 22:52:51,489 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:52:51,772 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:52:51,773 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:56:23,573 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 22:56:23,818 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 22:56:23,819 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 22:57:36,802 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:57:36,802 - app - DEBUG - 상품 개수: 0
+2025-04-16 22:57:37,931 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 22:57:37,931 - app - DEBUG - 상품 개수: 0
+2025-04-16 23:01:27,977 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:01:28,043 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:01:28,644 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:01:28,645 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:02:38,475 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:02:38,735 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:02:38,736 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:02:57,580 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 23:02:57,580 - app - DEBUG - 상품 개수: 0
+2025-04-16 23:03:48,682 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:03:50,935 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:03:55,526 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:04:00,414 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:04:11,185 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:06:03,620 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:06:03,710 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:06:04,418 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:06:04,419 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:06:59,319 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:06:59,545 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:06:59,545 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:07:22,948 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:07:22,948 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:07:22,948 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:07:25,997 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:07:27,984 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:07:28,162 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:07:28,302 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:07:29,527 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:07:29,675 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:08:52,085 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:08:52,158 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:08:52,451 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:08:52,452 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:11:56,905 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:11:57,473 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:11:59,960 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:12:00,191 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:12:00,191 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:12:05,102 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:12:05,257 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:12:05,417 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:12:05,562 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:12:05,690 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:12:05,817 - flask_wtf.csrf - INFO - The CSRF token is missing.
+2025-04-16 23:18:39,424 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:18:39,493 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:18:40,080 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:18:40,082 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:19:33,221 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:19:33,275 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:19:33,533 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:19:33,535 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:19:59,808 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:20:00,053 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:20:00,054 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:20:16,397 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:20:16,398 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:20:16,398 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:20:17,610 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:20:17,610 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:20:17,610 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:20:19,700 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:20:19,700 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:20:19,700 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:20:39,953 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 23:20:39,953 - app - DEBUG - 상품 개수: 0
+2025-04-16 23:21:41,256 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:21:41,485 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:21:41,486 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:22:01,116 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:22:01,117 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:22:01,117 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:22:25,210 - app - DEBUG - 조회된 상품 목록: [{'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:22:25,210 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:22:25,210 - app - DEBUG - 첫 번째 상품의 ID: df06735f-8923-492d-8eef-944f6ae3bcb2
+2025-04-16 23:24:59,136 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:24:59,193 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:24:59,488 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:24:59,489 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:25:13,606 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:25:13,829 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:25:13,830 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:25:57,872 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:25:58,102 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:25:58,103 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:27:11,339 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-16 23:27:11,481 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:27:11,799 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:27:11,800 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:37:39,588 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:37:39,841 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:37:39,843 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:38:57,054 - app - DEBUG - 조회된 상품 목록: [{'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'bb4c96f5-9ee7-40d8-9219-da98b1ae04a0', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 13), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:38:57,055 - app - DEBUG - 상품 개수: 3
+2025-04-16 23:38:57,055 - app - DEBUG - 첫 번째 상품의 ID: 23d14357-e7f4-4cd0-b036-d0dfb30fe56b
+2025-04-16 23:39:01,798 - app - DEBUG - 조회된 상품 목록: [{'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:39:01,799 - app - DEBUG - 상품 개수: 2
+2025-04-16 23:39:01,799 - app - DEBUG - 첫 번째 상품의 ID: 23d14357-e7f4-4cd0-b036-d0dfb30fe56b
+2025-04-16 23:42:21,397 - app - DEBUG - 조회된 상품 목록: [{'id': '6665bfbc-52cf-4ef6-b3d7-e265fb766644', 'title': '영민이 자유이용권', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 42, 8), 'seller_name': 'taeyong_gay'}]
+2025-04-16 23:42:21,397 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:42:21,397 - app - DEBUG - 첫 번째 상품의 ID: 6665bfbc-52cf-4ef6-b3d7-e265fb766644
+2025-04-16 23:44:03,736 - app - DEBUG - 조회된 상품 목록: [{'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:44:03,737 - app - DEBUG - 상품 개수: 2
+2025-04-16 23:44:03,737 - app - DEBUG - 첫 번째 상품의 ID: 23d14357-e7f4-4cd0-b036-d0dfb30fe56b
+2025-04-16 23:44:12,505 - app - DEBUG - 조회된 상품 목록: [{'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-16 23:44:12,506 - app - DEBUG - 상품 개수: 2
+2025-04-16 23:44:12,507 - app - DEBUG - 첫 번째 상품의 ID: 23d14357-e7f4-4cd0-b036-d0dfb30fe56b
+2025-04-16 23:46:47,109 - app - DEBUG - 조회된 상품 목록: [{'id': '6665bfbc-52cf-4ef6-b3d7-e265fb766644', 'title': '영민이 자유이용권', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 42, 8), 'seller_name': 'taeyong_gay'}]
+2025-04-16 23:46:47,110 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:46:47,110 - app - DEBUG - 첫 번째 상품의 ID: 6665bfbc-52cf-4ef6-b3d7-e265fb766644
+2025-04-16 23:52:15,316 - werkzeug - INFO -  * Restarting with stat
+2025-04-16 23:52:15,581 - werkzeug - WARNING -  * Debugger is active!
+2025-04-16 23:52:15,582 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-16 23:52:54,272 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 23:52:54,272 - app - DEBUG - 상품 개수: 0
+2025-04-16 23:54:15,487 - app - DEBUG - 조회된 상품 목록: []
+2025-04-16 23:54:15,488 - app - DEBUG - 상품 개수: 0
+2025-04-16 23:55:00,621 - app - DEBUG - 조회된 상품 목록: [{'id': '6665bfbc-52cf-4ef6-b3d7-e265fb766644', 'title': '영민이 자유이용권', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 42, 8), 'seller_name': 'taeyong_gay'}]
+2025-04-16 23:55:00,622 - app - DEBUG - 상품 개수: 1
+2025-04-16 23:55:00,622 - app - DEBUG - 첫 번째 상품의 ID: 6665bfbc-52cf-4ef6-b3d7-e265fb766644
+2025-04-17 00:04:48,774 - app - DEBUG - 조회된 상품 목록: [{'id': 'd17d2b46-4111-4db9-9773-d5b0599e9154', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 49, 55), 'seller_name': 'test1'}, {'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:04:48,776 - app - DEBUG - 상품 개수: 3
+2025-04-17 00:04:48,776 - app - DEBUG - 첫 번째 상품의 ID: d17d2b46-4111-4db9-9773-d5b0599e9154
+2025-04-17 00:17:25,091 - engineio.server - ERROR - Invalid session JuQRyb6fXkRtzGpSAAB2 (further occurrences of this error will be logged with level INFO)
+2025-04-17 00:28:22,681 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:28:22,931 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:28:22,933 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-17 00:33:01,814 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-17 00:33:01,885 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:33:02,487 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:33:02,489 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-17 00:33:32,578 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-17 00:33:32,635 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:33:32,888 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:33:32,889 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-17 00:34:06,986 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-17 00:34:07,073 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:34:07,468 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:34:07,469 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-17 00:36:04,787 - werkzeug - INFO -  * Detected change in '/home/gunp4ng/project/WHS/whs_secure-coding/app.py', reloading
+2025-04-17 00:36:04,853 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:36:05,442 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:36:05,444 - werkzeug - INFO -  * Debugger PIN: 844-232-602
+2025-04-17 00:40:06,939 - app - DEBUG - 조회된 상품 목록: [{'id': 'bbd836b0-72fa-414d-bc38-a3fe16474fdf', 'title': 'test', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 15, 31, 50), 'seller_name': 'test1'}, {'id': '1135e7bd-ae1f-4141-9d4b-94ccb9cf1778', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 15, 6, 19), 'seller_name': 'test1'}, {'id': 'd17d2b46-4111-4db9-9773-d5b0599e9154', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 49, 55), 'seller_name': 'test1'}, {'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:40:06,941 - app - DEBUG - 상품 개수: 5
+2025-04-17 00:40:06,941 - app - DEBUG - 첫 번째 상품의 ID: bbd836b0-72fa-414d-bc38-a3fe16474fdf
+2025-04-17 00:40:10,038 - app - DEBUG - 조회된 상품 목록: [{'id': 'bbd836b0-72fa-414d-bc38-a3fe16474fdf', 'title': 'test', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 15, 31, 50), 'seller_name': 'test1'}, {'id': '1135e7bd-ae1f-4141-9d4b-94ccb9cf1778', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 15, 6, 19), 'seller_name': 'test1'}, {'id': 'd17d2b46-4111-4db9-9773-d5b0599e9154', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 49, 55), 'seller_name': 'test1'}, {'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:40:10,039 - app - DEBUG - 상품 개수: 5
+2025-04-17 00:40:10,039 - app - DEBUG - 첫 번째 상품의 ID: bbd836b0-72fa-414d-bc38-a3fe16474fdf
+2025-04-17 00:40:16,061 - app - DEBUG - 조회된 상품 목록: [{'id': '1135e7bd-ae1f-4141-9d4b-94ccb9cf1778', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 15, 6, 19), 'seller_name': 'test1'}, {'id': 'd17d2b46-4111-4db9-9773-d5b0599e9154', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 49, 55), 'seller_name': 'test1'}, {'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:40:16,061 - app - DEBUG - 상품 개수: 4
+2025-04-17 00:40:16,061 - app - DEBUG - 첫 번째 상품의 ID: 1135e7bd-ae1f-4141-9d4b-94ccb9cf1778
+2025-04-17 00:40:19,091 - app - DEBUG - 조회된 상품 목록: [{'id': 'd17d2b46-4111-4db9-9773-d5b0599e9154', 'title': 'test1', 'price': 1.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 49, 55), 'seller_name': 'test1'}, {'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:40:19,092 - app - DEBUG - 상품 개수: 3
+2025-04-17 00:40:19,092 - app - DEBUG - 첫 번째 상품의 ID: d17d2b46-4111-4db9-9773-d5b0599e9154
+2025-04-17 00:40:23,219 - app - DEBUG - 조회된 상품 목록: [{'id': '23d14357-e7f4-4cd0-b036-d0dfb30fe56b', 'title': '꽃구경', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 38, 14), 'seller_name': 'test1'}, {'id': 'df06735f-8923-492d-8eef-944f6ae3bcb2', 'title': '노을', 'price': 1111.0, 'created_at': datetime.datetime(2025, 4, 16, 14, 3, 13), 'seller_name': 'test1'}]
+2025-04-17 00:40:23,220 - app - DEBUG - 상품 개수: 2
+2025-04-17 00:40:23,220 - app - DEBUG - 첫 번째 상품의 ID: 23d14357-e7f4-4cd0-b036-d0dfb30fe56b
+2025-04-17 00:45:51,770 - werkzeug - INFO -  * Restarting with stat
+2025-04-17 00:45:52,017 - werkzeug - WARNING -  * Debugger is active!
+2025-04-17 00:45:52,019 - werkzeug - INFO -  * Debugger PIN: 844-232-602

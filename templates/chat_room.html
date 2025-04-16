@@ -1,0 +1,754 @@
+{% extends "base.html" %}
+{% block title %}채팅방{% endblock %}
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="chat-info">
+            <h2>{{ other_user.username }}</h2>
+            <p class="user-status {{ 'online' if other_user.is_online == True else 'offline' }}">
+                {{ '온라인' if other_user.is_online == True else '오프라인' }}
+            </p>
+            
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('report', target_id=other_user.id, target_type='user') }}" class="btn btn-danger me-2">
+                <i class="fas fa-flag"></i> 신고하기
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-2">대시보드로 돌아가기</a>
+            <form action="{{ url_for('leave_chat_room', room_id=room_id) }}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> 채팅방 나가기
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if other_user.report_count >= 5 or product_report_count >= 5 %}
+    <div class="warning-alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        {% if other_user.report_count >= 5 and product_report_count >= 5 %}
+            <strong>주의:</strong> 이 사용자와 관련 상품은 다수의 신고를 받았습니다. 거래 시 주의하세요.
+        {% elif other_user.report_count >= 5 %}
+            <strong>주의:</strong> 이 사용자는 다수의 신고를 받았습니다. 거래 시 주의하세요.
+        {% elif product_report_count >= 5 %}
+            <strong>주의:</strong> 이 대화와 관련된 상품은 다수의 신고를 받았습니다. 구매 시 주의하세요.
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if product %}
+    <div class="product-info-panel">
+        <div class="product-image">
+            <i class="fas fa-shopping-bag product-icon"></i>
+        </div>
+        <div class="product-details">
+            <h4 class="product-title">{{ product.title }}</h4>
+            <div class="price-badge">{{ product.price|format_currency }}원</div>
+            <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-eye"></i> 상품 상세보기
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="chat-messages-container">
+        <div id="chat-messages" class="chat-messages">
+            <!-- 메시지를 시간 순서대로 정렬 (오래된 메시지가 상단에 표시) -->
+            {% for message in messages %}
+                <div class="message {{ 'sent' if message.sender_id == session.user_id else 'received' }}"
+                     {% if message.payment_id %}data-payment-id="{{ message.payment_id }}"{% endif %}>
+                    <div class="message-header">
+                        <span class="sender">{{ message.username if message.username is defined else message.sender_name }}</span>
+                    </div>
+                    <div class="message-content">{{ message.content }}</div>
+                    <div class="message-time">
+                        {% if message.created_at is string %}
+                            {{ message.created_at.replace('T', ' ').split('.')[0] if 'T' in message.created_at else message.created_at }}
+                        {% else %}
+                            {{ message.created_at }}
+                        {% endif %}
+                    </div>
+
+                    <!-- 송금 요청 메시지에 버튼 추가 -->
+                    {% if '💰 송금 요청' in message.content and not '승인됨' in message.content and not '거절됨' in message.content and not '취소됨' in message.content and message.sender_id != session.user_id and message.payment_id %}
+                        <div class="payment-actions">
+                            <button class="payment-accept-btn" data-room-id="{{ room_id }}">송금 받기</button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="message-form" class="message-form">
+        <input type="text" id="message-input" placeholder="메시지를 입력하세요...">
+        <button id="send-btn">전송</button>
+    </div>
+
+    {% if not is_seller %}
+    <div class="payment-form">
+        <input type="number" id="payment-amount" placeholder="금액 입력" min="1">
+        <button id="request-payment-btn">송금 요청하기</button>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 100px);
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .chat-info h2 {
+        margin: 0 0 5px 0;
+        font-size: 1.8rem;
+    }
+
+    .chat-info p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .user-status {
+        font-weight: bold;
+    }
+
+    .online {
+        color: green;
+    }
+
+    .offline {
+        color: #999;
+    }
+
+    /* 상품 정보 패널 새로운 스타일 */
+    .product-info-panel {
+        display: flex;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+        align-items: center;
+        max-height: 80px;
+    }
+    
+    .product-info-panel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+        width: 50px;
+        height: 50px;
+        background-color: #f0f8ff;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+    
+    .product-icon {
+        font-size: 24px;
+        color: #4a6da7;
+    }
+    
+    .product-details {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+    
+    .product-title {
+        font-size: 0.95rem;
+        margin: 0 10px 0 0;
+        color: #333;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+    
+    .price-badge {
+        display: inline-block;
+        background-color: #4caf50;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        margin: 0 10px 0 0;
+        white-space: nowrap;
+    }
+    
+    .product-description {
+        display: none;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .chat-messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .message {
+        max-width: 70%;
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        position: relative;
+        clear: both;
+    }
+
+    .sent {
+        align-self: flex-end;
+        background-color: #4CAF50;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+
+    .received {
+        align-self: flex-start;
+        background-color: #e9e9eb;
+        color: #333;
+        border-bottom-left-radius: 5px;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
+
+    .sent .message-header {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .received .message-header {
+        color: #777;
+    }
+
+    .sender {
+        font-weight: 500;
+    }
+
+    .message-content {
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    .message-time {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        text-align: right;
+        margin-top: 4px;
+    }
+
+    .sent .message-time {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .received .message-time {
+        color: #888;
+    }
+
+    .message-form {
+        display: flex;
+        padding-top: 15px;
+        margin-bottom: 10px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    #message-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-size: 1rem;
+    }
+
+    #send-btn, #request-payment-btn {
+        min-width: 120px;
+        white-space: nowrap;
+    }
+
+    #send-btn {
+        padding: 12px 20px;
+        background-color: #007AFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s;
+    }
+
+    #send-btn:hover {
+        background-color: #005BB5;
+    }
+
+    .payment-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    #payment-amount {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    #request-payment-btn {
+        padding: 12px 20px;
+        background-color: #FF9500;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s;
+    }
+
+    #request-payment-btn:hover {
+        background-color: #CC7A00;
+    }
+
+    /* 송금 관련 스타일 */
+    .payment-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
+
+    .payment-accept-btn {
+        padding: 6px 12px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .payment-accept-btn:hover {
+        background-color: #388E3C;
+    }
+
+    .payment-accept-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* 반응형 디자인 추가 */
+    @media (min-width: 1200px) {
+        .chat-container {
+            max-width: 80%;
+        }
+
+        .chat-messages {
+            min-height: 500px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .chat-container {
+            height: calc(100vh - 80px);
+            padding: 15px;
+        }
+
+        #send-btn, #request-payment-btn {
+            min-width: 80px;
+            padding: 12px;
+        }
+        
+        .product-info-panel {
+            padding: 8px;
+        }
+        
+        .product-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .product-icon {
+            font-size: 20px;
+        }
+        
+        .product-title {
+            font-size: 0.85rem;
+            max-width: 100px;
+        }
+        
+        .price-badge {
+            padding: 2px 6px;
+            font-size: 0.75rem;
+        }
+
+        .chat-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .header-actions {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .header-actions .btn {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            margin-right: 5px !important;
+        }
+    }
+
+    .btn-danger {
+        background-color: #FF3B30;
+        border-color: #FF3B30;
+        color: white;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-danger:hover {
+        background-color: #D70015;
+        border-color: #D70015;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn i {
+        margin-right: 5px;
+    }
+
+    .warning-alert {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+  
+    .warning-alert i {
+        margin-right: 10px;
+        font-size: 20px;
+        color: #f0ad4e;
+    }
+  
+    .warning-alert strong {
+        margin-right: 5px;
+    }
+</style>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-btn');
+        const paymentAmountInput = document.getElementById('payment-amount');
+        const requestPaymentButton = document.getElementById('request-payment-btn');
+        const currentUserID = JSON.parse('{{ session.user_id|tojson }}');
+        const roomID = JSON.parse('{{ room_id|tojson }}');
+        // CSRF 토큰 가져오기
+        const csrfToken = '{{ csrf_token() }}';
+
+        // 소켓 연결
+        const socket = io();
+
+        // 연결 이벤트
+        socket.on('connect', function() {
+            console.log('소켓 연결됨');
+            socket.emit('join_room', { room_id: String(roomID) });
+        });
+
+        // 메시지 수신 이벤트
+        socket.on('message', function(data) {
+            console.log('메시지 수신:', data);
+            addMessage(data);
+        });
+
+        // 연결 오류 이벤트
+        socket.on('connect_error', function(error) {
+            console.error('연결 오류:', error);
+        });
+
+        // 메시지 전송
+        sendButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 송금 받기 버튼에 이벤트 리스너 등록
+        document.querySelectorAll('.payment-accept-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const roomId = this.getAttribute('data-room-id');
+                acceptPayment(this, roomId);
+            });
+        });
+
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (content) {
+                try {
+                    console.log('메시지 전송 시도:', content);
+                    socket.emit('send_message', {
+                        room_id: String(roomID),
+                        content: content
+                    });
+                    messageInput.value = '';
+                    messageInput.focus();
+                } catch (error) {
+                    console.error('메시지 전송 중 오류 발생:', error);
+                    alert('메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            }
+        }
+
+        // 메시지 추가 함수
+        function addMessage(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = data.sender_id == currentUserID ? 'message sent' : 'message received';
+
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+
+            const senderSpan = document.createElement('span');
+            senderSpan.className = 'sender';
+            senderSpan.textContent = data.sender_name || '알 수 없음';
+
+            headerDiv.appendChild(senderSpan);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = data.content;
+
+            // 결제ID가 있으면 data 속성에 저장
+            if (data.payment_id) {
+                messageDiv.dataset.paymentId = data.payment_id;
+            }
+
+            // 시간을 별도의 div에 표시
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+
+            // 시간 형식 변경 - ISO 형식을 YYYY-MM-DD HH:MM:SS 형식으로 변환
+            let formattedTime = data.created_at;
+            if (typeof data.created_at === 'string') {
+                if (data.created_at.includes('T')) {
+                    formattedTime = data.created_at.replace('T', ' ').split('.')[0];
+                } else {
+                    formattedTime = data.created_at;
+                }
+            }
+            timeDiv.textContent = formattedTime;
+
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+
+            // 송금 요청 메시지인 경우 버튼 추가
+            if (data.content.includes('💰 송금 요청') && 
+                !data.content.includes('승인됨') && 
+                !data.content.includes('거절됨') && 
+                !data.content.includes('취소됨') && 
+                data.sender_id != currentUserID && 
+                data.payment_id) {
+                console.log('송금 요청 메시지 감지, 버튼 추가');
+                const paymentActions = document.createElement('div');
+                paymentActions.className = 'payment-actions';
+
+                const acceptBtn = document.createElement('button');
+                acceptBtn.className = 'payment-accept-btn';
+                acceptBtn.textContent = '송금 받기';
+                acceptBtn.setAttribute('data-room-id', roomID);
+                acceptBtn.addEventListener('click', function() {
+                    acceptPayment(this, roomID);
+                });
+
+                paymentActions.appendChild(acceptBtn);
+                messageDiv.appendChild(paymentActions);
+            }
+
+            // 새 메시지를 맨 아래에 추가
+            chatMessages.appendChild(messageDiv);
+
+            // 스크롤을 맨 아래로 이동
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 초기 로드 시 스크롤을 맨 아래로 이동
+        setTimeout(function() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 100);
+
+        // 송금 요청 처리
+        requestPaymentButton.addEventListener('click', function() {
+            const amount = paymentAmountInput.value.trim();
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                alert('올바른 금액을 입력해주세요.');
+                return;
+            }
+
+            // AJAX로 송금 요청 저장
+            fetch('/payment/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    receiver_id: JSON.parse('{{ other_user.id|tojson }}'),
+                    amount: parseFloat(amount),
+                    status: 'pending'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 입력 필드 초기화
+                    paymentAmountInput.value = '';
+                    messageInput.focus();
+                } else {
+                    alert('송금 요청 생성 중 오류가 발생했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('송금 요청 생성 중 오류 발생:', error);
+                alert('송금 요청 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+            });
+        });
+
+        // 송금 받기 함수 - 기존 메시지에서 호출될 때 사용
+        function acceptPayment(button, roomId) {
+            console.log('송금 받기 버튼 클릭됨', roomId);
+            button.disabled = true;
+            button.textContent = '처리 중...';
+
+            // 메시지 div에서 결제ID 추출
+            const messageDiv = button.closest('.message');
+            const paymentId = messageDiv.dataset.paymentId;
+            console.log('결제 ID 데이터셋 값:', paymentId);
+
+            if (!paymentId) {
+                console.error('결제 ID를 찾을 수 없습니다');
+                console.log('메시지 요소:', messageDiv);
+                console.log('메시지의 모든 데이터셋:', messageDiv.dataset);
+                alert('결제 정보를 찾을 수 없습니다.');
+                button.disabled = false;
+                button.textContent = '송금 받기';
+                return;
+            }
+
+            // 메시지 내용에서 금액 추출 (서버에서 처리할 예정)
+            const messageContent = messageDiv.querySelector('.message-content').textContent;
+            console.log('메시지 내용:', messageContent);
+            
+            // AJAX로 송금 승인 요청 (백엔드 처리용)
+            fetch('/payment/handle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    payment_id: paymentId,
+                    action: 'accept'
+                })
+            })
+            .then(response => {
+                console.log('서버 응답:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('서버 응답 데이터:', data);
+                if (!data.success) {
+                    alert('송금 처리 중 오류가 발생했습니다: ' + data.message);
+                    button.disabled = false;
+                    button.textContent = '송금 받기';
+                    return;
+                }
+                
+                // 버튼 상태 변경
+                button.disabled = true;
+                button.textContent = '송금 완료';
+                button.style.backgroundColor = '#4CAF50';
+                
+                // 버튼 제거
+                setTimeout(() => {
+                    const actionsDiv = button.parentElement;
+                    if (actionsDiv) {
+                        actionsDiv.remove();
+                    }
+                }, 500);
+            })
+            .catch(err => {
+                console.error('오류 발생:', err);
+                alert('처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                button.disabled = false;
+                button.textContent = '송금 받기';
+            });
+        }
+    });
+</script>
+{% endblock %} 

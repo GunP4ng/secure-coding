@@ -1,0 +1,647 @@
+{% extends "base.html" %}
+{% block title %}프로필{% endblock %}
+{% block content %}
+<div class="profile-container">
+  <h2>프로필</h2>
+  <form method="post" class="profile-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+      <label for="username">사용자명 (ID)</label>
+      <input type="text" name="username" id="username" value="{{ user.username }}" readonly class="readonly-field">
+    </div>
+    
+    <div class="form-group">
+      <label for="bio">자기소개</label>
+      <textarea name="bio" id="bio" rows="4">{{ user.bio or '' }}</textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="current_password">현재 비밀번호</label>
+      <input type="password" name="current_password" id="current_password" placeholder="비밀번호 변경 시 입력">
+    </div>
+    
+    <div class="form-group">
+      <label for="new_password">새 비밀번호</label>
+      <input type="password" name="new_password" id="new_password" placeholder="변경할 비밀번호">
+    </div>
+    
+    <div class="form-group">
+      <label for="confirm_password">새 비밀번호 확인</label>
+      <input type="password" name="confirm_password" id="confirm_password" placeholder="변경할 비밀번호 확인">
+    </div>
+    
+    <button type="submit" class="button">프로필 수정</button>
+  </form>
+</div>
+
+<div class="section-container">
+  <div class="section">
+    <h3>등록한 상품</h3>
+    {% if products %}
+      <div class="product-list">
+        {% for product in products %}
+          <div class="product-item">
+            <div class="product-info">
+              <h4>{{ product.title }}</h4>
+              <p class="price">{{ "{:,}".format(product.price) }}원</p>
+              <p class="date">등록일: {{ product.created_at }}</p>
+            </div>
+            <div class="product-actions">
+              <a href="{{ url_for('view_product', product_id=product.id) }}" class="button">상세보기</a>
+              <a href="{{ url_for('edit_product', product_id=product.id) }}" class="button">수정</a>
+              <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" class="delete-form">
+                <button type="submit" class="button delete-button" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-message">등록한 상품이 없습니다.</p>
+    {% endif %}
+  </div>
+
+  <div class="section">
+    <h3>송금 내역</h3>
+    {% if payments %}
+      <div id="payment-history" class="payment-list">
+        {% for payment in payments %}
+          <div class="payment-item {% if payment.status == 'completed' %}completed{% elif payment.status == 'pending' %}pending{% elif payment.status == 'rejected' %}rejected{% elif payment.status == 'cancelled' %}cancelled{% endif %}" data-payment-id="{{ payment.id }}">
+            <div class="payment-info">
+              <div class="payment-header">
+                <p class="amount">{{ "{:,}".format(payment.amount) }}원</p>
+                <p class="status">
+                  {% if payment.status == 'pending' %}
+                    <span class="status-pending">대기 중</span>
+                  {% elif payment.status == 'completed' %}
+                    <span class="status-completed">완료됨</span>
+                  {% elif payment.status == 'rejected' %}
+                    <span class="status-rejected">거절됨</span>
+                  {% elif payment.status == 'cancelled' %}
+                    <span class="status-cancelled">취소됨</span>
+                  {% else %}
+                    <span>{{ payment.status }}</span>
+                  {% endif %}
+                </p>
+              </div>
+              <div class="payment-direction">
+                {% if payment.sender_id == session.user_id %}
+                  <p class="direction">송금 요청함 ➡️</p>
+                {% else %}
+                  <p class="direction">송금 요청받음 ⬅️</p>
+                {% endif %}
+              </div>
+              <p class="date">{{ payment.created_at }}</p>
+            </div>
+            <div class="payment-details">
+              <p>보낸 사람: <strong>{{ payment.sender_name }}</strong>{% if payment.sender_id == session.user_id %} (나){% endif %}</p>
+              <p>받는 사람: <strong>{{ payment.receiver_name }}</strong>{% if payment.receiver_id == session.user_id %} (나){% endif %}</p>
+              {% if payment.product_id %}
+                <p>상품: <a href="{{ url_for('view_product', product_id=payment.product_id) }}">상품 보기</a></p>
+              {% endif %}
+            </div>
+            {% if payment.status == 'pending' %}
+              <div class="payment-actions">
+                {% if payment.receiver_id == session.user_id %}
+                  <button class="button accept-button" onclick="handlePayment('{{ payment.id }}', 'accept')">승인</button>
+                  <button class="button reject-button" onclick="handlePayment('{{ payment.id }}', 'reject')">거절</button>
+                {% elif payment.sender_id == session.user_id %}
+                  <button class="button cancel-button" onclick="handlePayment('{{ payment.id }}', 'cancel')">취소</button>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-message">송금 내역이 없습니다.</p>
+    {% endif %}
+  </div>
+
+  <div class="section">
+    <h3>신고 내역</h3>
+    {% if reports %}
+      <div class="report-list">
+        {% for report in reports %}
+          <div class="report-item" id="report-{{ report.id }}">
+            <div class="report-info">
+              <p class="target-type">대상 유형: {% if report.target_type == 'user' %}사용자{% elif report.target_type == 'product' %}상품{% endif %}</p>
+              <p class="target">대상: {{ report.target_name }}</p>
+              <p class="reason">사유: {{ report.reason }}</p>
+              <p>상태: <span class="status status-{{ report.status }}">
+                {% if report.status == 'pending' %}대기 중
+                {% elif report.status == 'resolved' %}해결됨
+                {% elif report.status == 'rejected' %}거부됨
+                {% else %}{{ report.status }}
+                {% endif %}
+              </span></p>
+              <p class="date">신고일: {{ report.created_at }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-message">신고 내역이 없습니다.</p>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .profile-container {
+    max-width: 500px;
+    margin: 0 auto 30px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-form {
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+  
+  input:focus, textarea:focus {
+    border-color: #007AFF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
+  
+  .readonly-field {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #666;
+  }
+  
+  .readonly-field:focus {
+    border-color: #e0e0e0;
+    box-shadow: none;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .button {
+    padding: 12px 20px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s;
+  }
+  
+  .button:hover {
+    background-color: #005BB5;
+  }
+
+  .delete-button {
+    background-color: #FF3B30;
+  }
+
+  .delete-button:hover {
+    background-color: #D70015;
+  }
+
+  .section-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .section h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .product-list, .payment-list, .report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .product-item, .payment-item, .report-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .product-item:hover, .payment-item:hover, .report-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-info h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 18px;
+  }
+
+  .price {
+    color: #007AFF;
+    font-weight: 600;
+    margin: 5px 0;
+  }
+
+  .date {
+    color: #666;
+    font-size: 14px;
+    margin: 5px 0;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .payment-info, .report-info {
+    margin-bottom: 10px;
+  }
+
+  .amount {
+    color: #007AFF;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 5px 0;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 5px 0;
+  }
+
+  .status.pending {
+    background-color: #FFD60A;
+    color: #333;
+  }
+
+  .status.completed {
+    background-color: #34C759;
+    color: white;
+  }
+
+  .status.rejected {
+    background-color: #FF3B30;
+    color: white;
+  }
+
+  .status.cancelled {
+    background-color: #9E9E9E;
+    color: white;
+  }
+
+  .payment-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #999;
+  }
+
+  .payment-item.completed {
+    border-left-color: #4CAF50;
+  }
+
+  .payment-item.pending {
+    border-left-color: #FF9800;
+  }
+
+  .payment-item.rejected {
+    border-left-color: #F44336;
+  }
+
+  .payment-item.cancelled {
+    border-left-color: #9E9E9E;
+  }
+
+  .payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .payment-direction {
+    margin: 5px 0;
+    font-weight: 500;
+  }
+
+  .status-pending {
+    color: #FF9800;
+    font-weight: 600;
+  }
+
+  .status-completed {
+    color: #4CAF50;
+    font-weight: 600;
+  }
+
+  .status-rejected {
+    color: #F44336;
+    font-weight: 600;
+  }
+
+  .status-cancelled {
+    color: #9E9E9E;
+    font-weight: 600;
+  }
+
+  .payment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .accept-button {
+    background-color: #4CAF50;
+  }
+
+  .accept-button:hover {
+    background-color: #388E3C;
+  }
+
+  .reject-button {
+    background-color: #F44336;
+  }
+
+  .reject-button:hover {
+    background-color: #D32F2F;
+  }
+
+  .cancel-button {
+    background-color: #9E9E9E;
+  }
+
+  .cancel-button:hover {
+    background-color: #757575;
+  }
+
+  @media (max-width: 768px) {
+    .profile-container, .section-container {
+      padding: 15px;
+    }
+
+    .product-actions {
+      flex-direction: column;
+    }
+
+    .button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+
+  /* 하이라이트 효과 */
+  @keyframes highlight-animation {
+    0% { background-color: rgba(255, 213, 79, 0.3); }
+    100% { background-color: transparent; }
+  }
+  
+  .highlight {
+    animation: highlight-animation 2s ease-out;
+  }
+
+  .report-info p {
+    margin: 5px 0;
+  }
+  
+  .target-type {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .target {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .reason {
+    white-space: pre-line;
+    color: #666;
+  }
+  
+  .status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .status-pending {
+    background-color: #FFF3CD;
+    color: #856404;
+  }
+  
+  .status-resolved {
+    background-color: #D4EDDA;
+    color: #155724;
+  }
+  
+  .status-rejected {
+    background-color: #F8D7DA;
+    color: #721C24;
+  }
+  
+  .status:empty::before {
+    content: '대기 중';
+    color: #666;
+  }
+
+  .empty-message {
+    color: #666;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const profileForm = document.querySelector('.profile-form');
+    const newPasswordInput = document.getElementById('new_password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    
+    profileForm.addEventListener('submit', function(e) {
+      // 현재 비밀번호와 새 비밀번호 중 하나만 입력한 경우
+      const currentPasswordInput = document.getElementById('current_password');
+      if ((currentPasswordInput.value && !newPasswordInput.value) || 
+          (!currentPasswordInput.value && newPasswordInput.value)) {
+        e.preventDefault();
+        alert('비밀번호를 변경하려면 현재 비밀번호와 새 비밀번호를 모두 입력해야 합니다.');
+        return false;
+      }
+      
+      // 새 비밀번호를 입력한 경우 확인 비밀번호와 일치하는지 확인
+      if (newPasswordInput.value) {
+        if (newPasswordInput.value !== confirmPasswordInput.value) {
+          e.preventDefault();
+          alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
+          confirmPasswordInput.focus();
+          return false;
+        }
+      }
+    });
+    
+    // 비밀번호 입력 필드의 유효성을 실시간으로 확인
+    confirmPasswordInput.addEventListener('input', function() {
+      if (newPasswordInput.value && confirmPasswordInput.value) {
+        if (newPasswordInput.value !== confirmPasswordInput.value) {
+          confirmPasswordInput.style.borderColor = '#FF3B30';
+        } else {
+          confirmPasswordInput.style.borderColor = '#34C759';
+        }
+      }
+    });
+  });
+
+  // 비밀번호 필드 표시/숨김 토글
+  function togglePasswordFields() {
+    const passwordFields = document.getElementById('password-fields');
+    passwordFields.style.display = passwordFields.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // 페이지 로드 시 URL 프래그먼트 확인 및 스크롤 처리
+  document.addEventListener('DOMContentLoaded', function() {
+    // 현재 URL의 해시(#) 값 확인
+    const hash = window.location.hash;
+    if (hash) {
+      // 해당 ID를 가진 요소가 있으면 스크롤
+      const element = document.querySelector(hash);
+      if (element) {
+        // 부드러운 스크롤로 이동
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // (선택 사항) 요소를 강조 표시
+        element.classList.add('highlight');
+        setTimeout(() => {
+          element.classList.remove('highlight');
+        }, 2000);
+      }
+    }
+  });
+
+  function handlePayment(paymentId, action) {
+    if (!confirm(`정말 이 송금 요청을 ${action === 'accept' ? '승인' : action === 'reject' ? '거절' : '취소'}하시겠습니까?`)) {
+      return;
+    }
+    
+    // 소켓 연결 초기화
+    const socket = io();
+    
+    // 백엔드 API 호출
+    fetch('/payment/handle', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        payment_id: paymentId,
+        action: action
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // 성공 메시지 표시
+        alert(data.message);
+        
+        // 송금 요청 처리 시 승인인 경우 메시지 즉시 보내기
+        if (action === 'accept' && data.room_id) {
+          // 현재 paymentId에 해당하는 송금 내역 데이터 찾기
+          const paymentItem = document.querySelector(`.payment-item[data-payment-id="${paymentId}"]`);
+          if (paymentItem) {
+            const amountText = paymentItem.querySelector('.amount').textContent;
+            const amount = amountText.replace('원', '').trim();
+            
+            // 서버에서 받은 채팅방 ID 사용
+            const roomId = data.room_id;
+            
+            if (roomId) {
+              // 소켓을 통해 메시지 즉시 전송
+              socket.emit('send_message', {
+                room_id: roomId,
+                content: `💰 송금 요청 (${amount}원): 승인됨 ✓`
+              });
+            }
+          }
+        }
+        
+        // 처리된 송금 요청 UI 업데이트
+        const paymentItem = document.querySelector(`.payment-item[data-payment-id="${paymentId}"]`);
+        if (paymentItem) {
+          // 상태 업데이트
+          const statusElement = paymentItem.querySelector('.status span');
+          if (statusElement) {
+            statusElement.textContent = action === 'accept' ? '완료됨' : 
+                                         action === 'reject' ? '거절됨' : '취소됨';
+            statusElement.className = action === 'accept' ? 'status-completed' : 
+                                      action === 'reject' ? 'status-rejected' : 'status-cancelled';
+          }
+          
+          // 버튼 영역 제거
+          const actionsDiv = paymentItem.querySelector('.payment-actions');
+          if (actionsDiv) {
+            actionsDiv.remove();
+          }
+          
+          // 클래스 업데이트
+          paymentItem.classList.remove('pending');
+          paymentItem.classList.add(action === 'accept' ? 'completed' : 
+                                   action === 'reject' ? 'rejected' : 'cancelled');
+        }
+      } else {
+        alert('처리 중 오류가 발생했습니다: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('요청 처리 중 오류 발생:', error);
+      alert('요청 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+    });
+  }
+</script>
+{% endblock %}

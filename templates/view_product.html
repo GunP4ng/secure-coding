@@ -1,0 +1,532 @@
+{% extends "base.html" %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block content %}
+<div class="product-container">
+  {% if product_report_count >= 5 or product.seller_report_count >= 5 %}
+  <div class="warning-alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    {% if product_report_count >= 5 and product.seller_report_count >= 5 %}
+      <strong>주의:</strong> 이 상품과 판매자는 다수의 신고를 받았습니다. 거래 시 주의하세요.
+    {% elif product_report_count >= 5 %}
+      <strong>주의:</strong> 이 상품은 다수의 신고를 받았습니다. 구매 시 주의하세요.
+    {% elif product.seller_report_count >= 5 %}
+      <strong>주의:</strong> 이 판매자는 다수의 신고를 받았습니다. 거래 시 주의하세요.
+    {% endif %}
+  </div>
+  {% endif %}
+  
+  <div class="product-header">
+    <div class="title-section">
+      <h2>{{ product.title }}</h2>
+      <p class="seller-info">판매자: {{ product.seller_name }}</p>
+    </div>
+    {% if session.user_id and session.user_id != product.seller_id %}
+    <div class="report-button-container">
+      <a href="{{ url_for('report', target_id=product.id, target_type='product') }}" class="report-button">
+        <i class="fas fa-flag"></i> 신고하기
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="product-images">
+    {% if product.image_url %}
+      <div class="image-gallery">
+        <div class="main-image-container">
+          <button class="main-nav-btn prev-main-btn">&lt;</button>
+          <img id="mainImage" src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.title }}" class="main-image">
+          <button class="main-nav-btn next-main-btn">&gt;</button>
+        </div>
+        <div class="image-slider-container">
+          <div class="image-slider">
+            <div class="thumbnail-container active" data-image="{{ url_for('static', filename='uploads/' + product.image_url) }}">
+              <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.title }}" class="thumbnail-image">
+            </div>
+            {% if images %}
+              {% for image in images %}
+                <div class="thumbnail-container" data-image="{{ url_for('static', filename='uploads/' + image) }}">
+                  <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ product.title }}" class="thumbnail-image">
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="no-image">
+        <p>이미지가 없습니다</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="product-details">
+    <div class="price-section">
+      <h3>가격</h3>
+      <p class="price">{{ "{:,}".format(product.price) }}원</p>
+    </div>
+
+    <div class="description-section">
+      <h3>상품 설명</h3>
+      <p class="description">{{ product.description }}</p>
+    </div>
+
+    <div class="product-actions">
+      {% if session.user_id and session.user_id == product.seller_id %}
+        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="button">상품 수정</a>
+        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" class="delete-form">
+          <button type="submit" class="button delete-button" onclick="return confirm('정말 삭제하시겠습니까?')">상품 삭제</button>
+        </form>
+      {% elif session.user_id and session.user_id != product.seller_id %}
+        <div class="product-action">
+          <a href="{{ url_for('chat_with_seller', seller_id=product.seller_id, product_id=product.id) }}" class="btn btn-primary">
+            <i class="fas fa-comments"></i> 판매자와 채팅하기
+          </a>
+        </div>
+      {% elif session.user_id %}
+        <a href="{{ url_for('chat_with_seller', seller_id=product.seller_id, product_id=product.id) }}" class="button">판매자와 채팅</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="button">로그인하여 채팅하기</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .warning-alert {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
+  
+  .warning-alert i {
+    margin-right: 10px;
+    font-size: 20px;
+    color: #f0ad4e;
+  }
+  
+  .warning-alert strong {
+    margin-right: 5px;
+  }
+
+  .product-header {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .product-header h2 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+
+  .seller-info {
+    color: #666;
+    font-size: 16px;
+  }
+
+  .title-section {
+    flex: 1;
+  }
+
+  .report-button-container {
+    margin-left: 15px;
+  }
+
+  .report-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: #FF3B30;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .report-button:hover {
+    background-color: #D70015;
+    color: white;
+  }
+
+  .report-button i {
+    margin-right: 5px;
+  }
+
+  .product-images {
+    margin-bottom: 30px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .image-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .main-image-container {
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    max-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    position: relative;
+    padding: 10px;
+  }
+
+  .main-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+    z-index: 10;
+    opacity: 0.7;
+  }
+
+  .main-nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 1;
+  }
+
+  .prev-main-btn {
+    left: 10px;
+  }
+
+  .next-main-btn {
+    right: 10px;
+  }
+
+  .main-image {
+    max-width: 100%;
+    max-height: 480px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .main-image:hover {
+    transform: scale(1.05);
+  }
+
+  .image-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+  }
+
+  .image-slider {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #007AFF #f0f0f0;
+    scroll-behavior: smooth;
+    width: 100%;
+    margin: 0 auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .image-slider::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .image-slider::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+
+  .image-slider::-webkit-scrollbar-thumb {
+    background-color: #007AFF;
+    border-radius: 4px;
+  }
+
+  .thumbnail-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .thumbnail-container:hover {
+    transform: translateY(-2px);
+  }
+
+  .thumbnail-container.active {
+    border-color: #007AFF;
+    box-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+  }
+
+  .thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .slider-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    z-index: 10;
+    position: relative;
+  }
+
+  .slider-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .product-image {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .product-image:hover {
+    transform: scale(1.02);
+  }
+
+  .no-image {
+    width: 100%;
+    height: 300px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+  }
+
+  .product-details {
+    margin-top: 30px;
+  }
+
+  .price-section {
+    margin-bottom: 30px;
+  }
+
+  .price-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .price {
+    color: #007AFF;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .description-section {
+    margin-bottom: 30px;
+  }
+
+  .description-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .description {
+    color: #666;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .button {
+    padding: 12px 20px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s;
+  }
+
+  .button:hover {
+    background-color: #005BB5;
+  }
+
+  .delete-button {
+    background-color: #FF3B30;
+  }
+
+  .delete-button:hover {
+    background-color: #D70015;
+  }
+
+  .delete-form, .payment-form {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .product-container {
+      padding: 20px;
+    }
+
+    .product-header {
+      flex-direction: column;
+    }
+
+    .report-button-container {
+      margin-left: 0;
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+
+    .product-image {
+      width: 250px;
+      height: 250px;
+    }
+
+    .product-actions {
+      flex-direction: column;
+    }
+
+    .button {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // 페이지 로드 완료 후 실행
+  window.onload = function() {
+    // 이미지 슬라이더 관련 코드
+    const thumbnails = document.querySelectorAll('.thumbnail-container');
+    const mainImage = document.getElementById('mainImage');
+    const mainContainer = document.querySelector('.main-image-container');
+    const prevMainBtn = document.querySelector('.prev-main-btn');
+    const nextMainBtn = document.querySelector('.next-main-btn');
+    
+    // 이미지 인덱스 관리
+    let currentImageIndex = 0;
+    const totalImages = thumbnails.length;
+    
+    // 썸네일 클릭 이벤트
+    thumbnails.forEach(function(thumbnail, index) {
+      thumbnail.addEventListener('click', function() {
+        const imageSrc = this.getAttribute('data-image');
+        if(imageSrc) {
+          changeMainImage(imageSrc, this);
+          currentImageIndex = index;
+        }
+      });
+    });
+    
+    // 메인 이미지 이전/다음 버튼 이벤트
+    if(prevMainBtn) {
+      prevMainBtn.addEventListener('click', function() {
+        navigateImage(-1);
+      });
+    }
+    
+    if(nextMainBtn) {
+      nextMainBtn.addEventListener('click', function() {
+        navigateImage(1);
+      });
+    }
+    
+    // 이미지 이전/다음으로 이동하는 함수
+    function navigateImage(direction) {
+      // 다음 이미지 인덱스 계산 (순환)
+      let nextIndex = currentImageIndex + direction;
+      if(nextIndex < 0) nextIndex = totalImages - 1;
+      if(nextIndex >= totalImages) nextIndex = 0;
+      
+      // 해당 인덱스의 썸네일 찾기
+      const nextThumbnail = thumbnails[nextIndex];
+      const imageSrc = nextThumbnail.getAttribute('data-image');
+      
+      if(imageSrc) {
+        changeMainImage(imageSrc, nextThumbnail);
+        currentImageIndex = nextIndex;
+        
+        // 슬라이더에서 해당 썸네일이 보이도록 스크롤
+        nextThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  };
+  
+  function changeMainImage(src, thumbnailEl) {
+    const mainImage = document.getElementById('mainImage');
+    if(mainImage) {
+      mainImage.src = src;
+      
+      // 모든 썸네일에서 active 클래스 제거
+      document.querySelectorAll('.thumbnail-container').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      
+      // 클릭한 썸네일에 active 클래스 추가
+      thumbnailEl.classList.add('active');
+    }
+  }
+</script>
+{% endblock %}

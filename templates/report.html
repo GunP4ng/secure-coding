@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}신고하기{% endblock %}
+{% block content %}
+<div class="report-container">
+  <h2>신고하기</h2>
+  
+  <form method="post" class="report-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="form-group">
+      <label for="target_type">신고 대상 유형</label>
+      <select name="target_type" id="target_type" required>
+        <option value="user" {% if target_type == 'user' %}selected{% endif %}>사용자</option>
+        <option value="product" {% if target_type == 'product' %}selected{% endif %}>상품</option>
+      </select>
+    </div>
+    
+    {% if target_id %}
+    <input type="hidden" name="target_id" value="{{ target_id }}">
+    {% else %}
+    <div class="form-group">
+      <label for="target_id">신고 대상 ID</label>
+      <input type="text" name="target_id" id="target_id" required placeholder="사용자 ID 또는 상품 ID를 입력하세요">
+    </div>
+    {% endif %}
+    
+    <div class="form-group">
+      <label for="reason">신고 사유</label>
+      <textarea name="reason" id="reason" required placeholder="신고 사유를 자세히 작성해주세요."></textarea>
+    </div>
+    
+    <button type="submit" class="report-button">신고하기</button>
+  </form>
+</div>
+
+<style>
+  .report-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .report-container h2 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+  }
+
+  .report-form {
+    margin-top: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  select,
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+
+  select:focus,
+  input:focus,
+  textarea:focus {
+    border-color: #007AFF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .report-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .report-button:hover {
+    background-color: #005BB5;
+  }
+
+  @media (max-width: 768px) {
+    .report-container {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
